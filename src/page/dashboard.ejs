@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Material Design Lite</title>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-green.min.css">
+    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" in tegrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout">
+      <header class="mdl-layout__header mdl-layout__header--scroll">
+				<div class="mdl-layout__header-row" style="
+					-webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
+					-moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
+					box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.75);
+					">
+          <span class="mdl-layout-title"><%= bot.user.username + ' - Tritium Networks Bot Manager' %></span>
+          <div class="mdl-layout-spacer"></div>
+          <nav class="mdl-navigation">
+            <!-- Add MDL Navigation Links here -->
+          </nav>
+        </div>
+      </header>
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title"></span>
+        <nav class="mdl-navigation">
+          <!-- Add MDL Navigation Links here -->
+        </nav>
+      </div>
+      <main class="mdl-layout__content">
+				<div style="margin: 10px">
+					<div class="row">
+						<canvas id="userStatus" width="770" height="385" style="width: 770px; height: 385px;"></canvas>
+						<canvas id="guildStatus" width="770" height="385" style="width: 770px; height: 385px;"></canvas>
+					</div>
+					<hr />
+					<div class="row" style="margin: 4px">
+						<select class="form-control col-sm-4" id='guilds'>
+							<option value="title"> --- Guilds ---</option>
+							<% bot.guilds.forEach((guild) => {%>
+								<option value="<%= guild.id %>"><%= guild.name + ' (' + guild.id + ')' %></option>
+							<% }) %>
+						</select>
+						<select class="form-control col-sm-4" id='channels'>
+							<option value="title"> --- Channels ---</option>
+							<% bot.channels.forEach((channel) => {%>
+								<option value="<%= channel.id %>"><%= channel.name + ' (' + channel.id + ')' %></option>
+							<% }) %>
+						</select>
+						<select class="form-control col-sm-4" id='users'>
+							<option value="title"> --- Users ---</option>
+							<% bot.users.forEach((user) => {%>
+								<option value="<%= user.id %>"><%= user.username + ' (' + user.id + ')' %></option>
+							<% }) %>
+						</select>
+					</div>
+					<hr />
+					<canvas id="pingStatus" width="1900" height="385" style="width: 1900px; height: 385px;"></canvas>
+				</div>
+      </main>
+		</div>
+		<script>
+			<%
+				let botCount = 0
+				let humanCount = 0
+
+				bot.users.forEach((user) => {
+					if (user.bot) botCount++
+					else humanCount++
+				})
+
+				let guildNames = []
+				let guildMembers = []
+
+				bot.guilds.forEach((guild) => {
+					guildNames[guildNames.length] = guild.name
+					guildMembers[guildMembers.length] = guild.memberCount
+				})
+			%>
+
+			new Chart(document.getElementById('userStatus'), {
+				type: 'doughnut',
+				data: {
+					labels: ['Bot', 'Human'],
+					datasets: [{
+						label: 'User Status',
+						data: [<%= botCount %>, <%= humanCount %>],
+						backgroundColor: ['rgb(255, 99, 132)','rgb(54, 162, 235)']
+					}]
+				},
+				options: {
+					responsive: false,
+					title: {
+						display: true,
+						text: 'User Counts'
+					}
+				}
+			})
+			
+			new Chart(document.getElementById('guildStatus'), {
+				type: 'bar',
+				data: {
+					labels: [
+						<% for (let i = 0; i < guildNames.length; i++) { %>
+							'<%= guildNames[i] %>',
+						<% } %>
+					],
+					datasets: [{
+						label: 'Users',
+						data: [<%= guildMembers %>],
+						backgroundColor: [
+							<% for (let i = 0; i < guildNames.length; i++) { %>
+								'<%= randomHexColor() %>',
+							<% } %>
+						]
+					}]
+				},
+				options: {
+					responsive: false,
+					title: {
+						display: true,
+						text: 'User from Guilds'
+					}
+				}
+			})
+
+			let lables = [1]
+			let data = []
+
+			fetch('/api/non-secured/getPing/<%= botKey %>').then((res) => res.json()).then((res) => {
+				data[data.length] = res.ping
+				new Chart(document.getElementById('pingStatus'), {
+					type: "line",
+					data: {
+						labels: lables,
+						datasets: [{
+							label: "Pings",
+							data: data,
+							fill: false,
+							borderColor: "rgb(75, 192, 192)",
+							lineTension: 0.1
+						}]
+					},
+					options: {
+						responsive: false,
+						title: {
+							display: true,
+							text: 'Ping Speed'
+						}
+					}
+				})
+			})
+			
+			setInterval(() => {
+				lables[lables.length] = lables.length + 1
+				fetch('/api/non-secured/getPing/<%= botKey %>').then((res) => res.json()).then((res) => {
+					data[data.length] = res.ping
+					new Chart(document.getElementById('pingStatus'), {
+						type: "line",
+						data: {
+							labels: lables,
+							datasets: [{
+								label: "Pings",
+								data: data,
+								fill: false,
+								borderColor: "rgb(75, 192, 192)",
+								lineTension: 0.1
+							}]
+						},
+						options: {
+							responsive: false,
+							title: {
+								display: true,
+								text: 'Ping Speed'
+							}
+						}
+					})
+				})
+			}, 3000)
+		
+		</script>
+  </body>
+</html>

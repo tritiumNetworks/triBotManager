@@ -1,0 +1,36 @@
+{
+  "name": "tbm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tritiumNetworks/triBotManager.git"
+  },
+  "author": "Tritium Networks",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tritiumNetworks/triBotManager/issues"
+  },
+  "homepage": "https://github.com/tritiumNetworks/triBotManager#readme",
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "cors": "^2.8.5",
+    "discord.js": "^11.5.1",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "random-hex-color": "^1.0.1",
+    "uuid": "^3.3.3"
+  }
+}

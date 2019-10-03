@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<!--
+	Aerial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>TriNet Bot Manager</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" in tegrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<div id="wrapper">
+			<div id="bg"></div>
+			<div id="overlay"></div>
+			<div id="main">
+
+				<!-- Header -->
+					<header id="header">
+						<h1>TriNet Bot Manager</h1>
+						<div class="row" style="margin-top: 3px;">
+							<div class="col-sm-6"></div>
+							<div class="col-sm-4">&copy; Tritium Networks. Design: <a href="http://html5up.net">HTML5 UP</a>.</div>
+						</div>
+						<div class="row" style="margin-top: 25px;">
+							<div class="col-sm-4"></div>
+							<input type="password" id="tokenInit" class="form-control col-sm-4" placeholder="Your Bot's Token (We do not collect tokens)">
+							<div class="col-sm-4"></div>
+						</div>
+						<nav>
+							<ul>
+								<li><a href="javascript:void(0)" onclick="
+									
+									if (document.getElementById('tokenInit').value.length > 0) {
+										fetch('/api/secured', {
+											method: 'POST',
+											mode: 'cors',
+											cache: 'no-cache',
+											credentials: 'same-origin',
+											headers: {
+												'Content-Type': 'application/json'
+											}, body: JSON.stringify({ from: '<%= sessionID %>', token: document.getElementById('tokenInit').value })
+										}).then(res => res.json()).then((res) => {
+											alert('Login Successfuly: ' + res.name)
+											window.location.replace('/manage/dashboard/' + res.botKey)
+										})
+									}
+									
+								" class="icon solid fa-arrow-right"><span class="label">Go</span></a></li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<span class="copyright">You're the <%= count %>th visitor</span>
+					</footer>
+
+			</div>
+		</div>
+		<script>
+			window.onload = function() { document.body.classList.remove('is-preload'); }
+			window.ontouchmove = function() { return false; }
+			window.onorientationchange = function() { document.body.scrollTop = 0; }
+		</script>
+	</body>
+</html>
